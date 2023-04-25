@@ -121,3 +121,24 @@ func (a Api) DeleteProject(c *gin.Context) {
 		"ok": true,
 	})
 }
+
+func (a Api) CreateTask(c *gin.Context) {
+	task := moduls.Task{}
+
+	if err := c.ShouldBindJSON(task); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err,
+		})
+		return
+	}
+
+	if err := a.Repo.CreateTask(context.Background(), task); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"ok": true,
+	})
+}

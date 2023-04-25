@@ -36,4 +36,5 @@ type Task struct {
 	FinishedAt   time.Time `json:"finished_at,omitempty"`
 	ProgrammerId string    `json:"programmer_id,omitempty"`
 	Attachments  string    `json:"attachments,omitempty"`
+	ProjectId    string    `json:"project_id,omitempty"`
 }

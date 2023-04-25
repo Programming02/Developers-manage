@@ -14,6 +14,7 @@ type Repository interface {
 	CreateProject(ctx context.Context, d moduls.Project) error
 	//UpdateProject(ctx context.Context, d moduls.Project) error
 	DeleteProject(ctx context.Context, name string) error
+	CreateTask(ctx context.Context, d moduls.Task) error
 	// TODO task crud
 	// TODO programmer/project_list
 	// TODO write comment

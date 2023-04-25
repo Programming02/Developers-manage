@@ -80,3 +80,14 @@ func (s Server) DeleteProject(ctx context.Context, name string) error {
 	}
 	return nil
 }
+
+func (s Server) CreateTask(ctx context.Context, t moduls.Task) error {
+	_, err := s.db.Exec(`
+	INSERT INTO task VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+		t.Id, t.Title, t.Description, t.StartAt, t.FinishAt, t.Status, t.StartedAt, t.FinishedAt, t.ProgrammerId, t.Attachments, t.ProjectId,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
