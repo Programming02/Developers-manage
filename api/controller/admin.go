@@ -141,6 +141,31 @@ func (a Api) DeleteProject(c *gin.Context) {
 	})
 }
 
+func (a Api) GetTask(c *gin.Context) {
+	id := c.Param("id")
+	t, err := a.Repo.GetTask(context.Background(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"id":            t.Id,
+		"title":         t.Title,
+		"description":   t.Description,
+		"start_at":      t.StartAt,
+		"finish_at":     t.FinishedAt,
+		"status":        t.Status,
+		"started_at":    t.StartedAt,
+		"finished_at":   t.FinishedAt,
+		"programmer_id": t.ProgrammerId,
+		"attachments":   t.Attachments,
+		"project_id":    t.ProjectId,
+	})
+}
+
 func (a Api) CreateTask(c *gin.Context) {
 	task := moduls.Task{}
 

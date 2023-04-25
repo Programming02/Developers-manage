@@ -96,6 +96,22 @@ func (s Server) DeleteProject(ctx context.Context, name string) error {
 	return nil
 }
 
+func (s Server) GetTask(ctx context.Context, id string) (moduls.Task, error) {
+	query := `
+	SELECT * FROM task WHERE id=$1,
+`
+	task := moduls.Task{}
+	rows, err := s.db.QueryContext(ctx, query, id)
+	if err != nil {
+		return moduls.Task{}, err
+	}
+
+	if err := rows.Scan(&task.Id, task.Title, task.Description, task.StartAt, task.FinishAt, task.Status, task.StartedAt, task.FinishedAt, task.ProgrammerId, task.ProjectId); err != nil {
+		return moduls.Task{}, err
+	}
+	return task, nil
+}
+
 func (s Server) CreateTask(ctx context.Context, t moduls.Task) error {
 	_, err := s.db.Exec(`
 	INSERT INTO task VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
