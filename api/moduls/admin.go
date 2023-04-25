@@ -6,16 +6,17 @@ import (
 )
 
 type Users struct {
-	UserId      uuid.UUID `json:"id,omitempty"`
-	FullName    string    `json:"full_name,omitempty"`
-	Avatar      string    `json:"avatar,omitempty"`
-	Role        string    `json:"role,omitempty"`
-	BirthDay    string    `json:"birth_day,omitempty"`
-	PhoneNumber string    `json:"phone,omitempty"`
-	Positions   string    `json:"position,omitempty"`
+	UserId      uuid.UUID     `json:"id,omitempty"`
+	FullName    string        `json:"full_name,omitempty"`
+	Avatar      string        `json:"avatar,omitempty"`
+	Role        string        `json:"role,omitempty"`
+	BirthDay    time.Duration `json:"birth_day,omitempty"`
+	PhoneNumber string        `json:"phone,omitempty"`
+	Positions   string        `json:"position,omitempty"`
 }
 
 type Project struct {
+	Id          string       `json:"id,omitempty"`
 	Name        string       `json:"name,omitempty"`
 	StartDate   time.Weekday `json:"start_date,omitempty"`
 	EndDate     time.Weekday `json:"end_date,omitempty"`
@@ -25,6 +26,7 @@ type Project struct {
 }
 
 type Task struct {
+	Id           string    `json:"id,omitempty"`
 	Title        string    `json:"title,omitempty"`
 	Description  string    `json:"description,omitempty"`
 	StartAt      time.Time `json:"start_at,omitempty"`

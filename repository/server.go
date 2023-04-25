@@ -61,8 +61,8 @@ func (s Server) DeleteUser(ctx context.Context, id string) error {
 
 func (s Server) CreateProject(ctx context.Context, d moduls.Project) error {
 	_, err := s.db.Exec(`
-	INSERT INTO project VALUES ($1, $2, $3, $4, $5, $6)`,
-		d.Name, d.StartDate, d.EndDate, d.Status, d.TeamLeadId, d.Attachments,
+	INSERT INTO project VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+		d.Id, d.Name, d.StartDate, d.EndDate, d.Status, d.TeamLeadId, d.Attachments,
 	)
 	if err != nil {
 		return err

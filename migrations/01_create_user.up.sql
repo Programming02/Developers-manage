@@ -10,23 +10,38 @@ CREATE TABLE users (
 
 
 CREATE TABLE project (
+    id TEXT NOT NULL PRIMARY KEY ,
     name TEXT NOT NULL ,
     start_date DATE NOT NULL ,
     end_date DATE NOT NULL ,
     status TEXT NOT NULL ,
-    teamlead_id NOT NULL REFERENCES user(id) ,
+    teamlead_id UUID NOT NULL REFERENCES user(id),
     attachments TEXT
 );
 
 
 CREATE TABLE task (
+    id TEXT NOT NULL PRIMARY KEY ,
     title TEXT NOT NULL ,
     description TEXT NOT NULL ,
-    start_at TIME NOT NULL ,
-    finish_at TIME NOT NULL ,
-    status TEXT NOT NULL
-    started_at TIME NOT NULL ,
-    finished_at TIME NOT NULL ,
+    start_at TIMESTAMP NOT NULL ,
+    finish_at TIMESTAMP NOT NULL ,
+    status TEXT NOT NULL,
+    started_at TIMESTAMP NOT NULL ,
+    finished_at TIMESTAMP NOT NULL ,
     programmer_id UUID NOT NULL REFERENCES users(id) ,
-    attachments TEXT
+    attachments TEXT,
+    project_id TEXT REFERENCES project(id)
+);
+
+CREATE TABLE attendance (
+    type TEXT NOT NULL ,
+    user_id UUID NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP
+);
+
+CREATE TABLE comments (
+    task_id TEXT NOT NULL REFERENCES task(id),
+    programmer_id UUID NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL
 );
