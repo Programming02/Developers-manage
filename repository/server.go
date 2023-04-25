@@ -59,6 +59,21 @@ func (s Server) DeleteUser(ctx context.Context, id string) error {
 	return nil
 }
 
+func (s Server) GetProject(ctx context.Context, id string) (moduls.Project, error) {
+	query := `
+	SELECT * FROM project WHERE id=$1,
+`
+	var project moduls.Project
+	rows, err := s.db.QueryContext(ctx, query, id)
+	if err != nil {
+		return moduls.Project{}, err
+	}
+	if err := rows.Scan(&project.Id, &project.Name, &project.StartDate, &project.EndDate, &project.Status, &project.TeamLeadId, &project.Attachments); err != nil {
+		return moduls.Project{}, err
+	}
+	return project, nil
+}
+
 func (s Server) CreateProject(ctx context.Context, d moduls.Project) error {
 	_, err := s.db.Exec(`
 	INSERT INTO project VALUES ($1, $2, $3, $4, $5, $6, $7)`,

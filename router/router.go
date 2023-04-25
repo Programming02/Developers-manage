@@ -12,6 +12,7 @@ func InitRouter(a *controller.Api) *gin.Engine {
 	r.POST("/admin", a.CreateAdmin)
 	r.DELETE("/del_admin", a.DeleteAdmin)
 	//r.POST("user_update", a.UpdateAdmin)
+	r.GET("/project/id", a.GetProject)
 	r.POST("/project", a.CreateProject)
 	r.DELETE("/del_project", a.DeleteProject)
 	r.POST("/task", a.CreateTask)

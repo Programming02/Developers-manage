@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/programming02/osg/api/moduls"
 	// "go get -u github.com/swaggo/files"
@@ -12,7 +11,6 @@ import (
 
 func (a Api) GetAdmin(c *gin.Context) {
 	id := c.Param("id")
-	fmt.Println(id)
 	b, err := a.Repo.GetUser(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -85,6 +83,27 @@ func (a Api) DeleteAdmin(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"ok": true,
+	})
+}
+
+func (a Api) GetProject(c *gin.Context) {
+	id := c.Param("id")
+	b, err := a.Repo.GetProject(context.Background(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"id":          b.Id,
+		"name":        b.Name,
+		"start_date":  b.StartDate,
+		"end_date":    b.EndDate,
+		"status":      b.Status,
+		"teamlead_id": b.TeamLeadId,
+		"attachment":  b.Attachments,
 	})
 }
 

@@ -10,11 +10,12 @@ type Repository interface {
 	CreateUser(ctx context.Context, d moduls.Users) error
 	//UpdateUser(ctx context.Context, d moduls.Users) error
 	DeleteUser(ctx context.Context, id string) error
-	//GetProject(ctx context.Context) moduls.Project
+	GetProject(ctx context.Context, id string) (moduls.Project, error)
 	CreateProject(ctx context.Context, d moduls.Project) error
 	//UpdateProject(ctx context.Context, d moduls.Project) error
 	DeleteProject(ctx context.Context, name string) error
 	CreateTask(ctx context.Context, d moduls.Task) error
+
 	// TODO task crud
 	// TODO programmer/project_list
 	// TODO write comment
