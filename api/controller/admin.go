@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/programming02/osg/api/moduls"
+	// "go get -u github.com/swaggo/files"
+	// "go get -u github.com/swaggo/gin-swagger"
 	"net/http"
 )
 
@@ -74,7 +76,6 @@ func (a Api) CreateAdmin(c *gin.Context) {
 func (a Api) DeleteAdmin(c *gin.Context) {
 	id := c.Query("id")
 
-	fmt.Println(id)
 	err := a.Repo.DeleteUser(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -97,6 +98,21 @@ func (a Api) CreateProject(c *gin.Context) {
 	}
 	if err := a.Repo.CreateProject(context.Background(), project); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"ok": true,
+	})
+}
+
+func (a Api) DeleteProject(c *gin.Context) {
+	name := c.Query("name")
+
+	err := a.Repo.DeleteProject(context.Background(), name)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
 		})
 		return

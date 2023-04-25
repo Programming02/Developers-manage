@@ -26,6 +26,7 @@ CREATE TABLE task (
     finish_at TIME NOT NULL ,
     status TEXT NOT NULL
     started_at TIME NOT NULL ,
+    finished_at TIME NOT NULL ,
     programmer_id UUID NOT NULL REFERENCES users(id) ,
     attachments TEXT
 );

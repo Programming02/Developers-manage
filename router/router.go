@@ -13,6 +13,7 @@ func InitRouter(a *controller.Api) *gin.Engine {
 	r.DELETE("/del_admin", a.DeleteAdmin)
 	//r.POST("user_update", a.UpdateAdmin)
 	r.POST("/project", a.CreateProject)
+	r.DELETE("/del_project", a.DeleteProject)
 
 	return r
 }
