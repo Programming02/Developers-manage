@@ -13,7 +13,7 @@ type Repository interface {
 	//GetProject(ctx context.Context) moduls.Project
 	CreateProject(ctx context.Context, d moduls.Project) error
 	//UpdateProject(ctx context.Context, d moduls.Project) error
-	//DeleteProject(ctx context.Context, name string) error
+	DeleteProject(ctx context.Context, name string) error
 	// TODO task crud
 	// TODO programmer/project_list
 	// TODO write comment

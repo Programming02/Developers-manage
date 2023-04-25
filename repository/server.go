@@ -69,3 +69,14 @@ func (s Server) CreateProject(ctx context.Context, d moduls.Project) error {
 	}
 	return nil
 }
+
+func (s Server) DeleteProject(ctx context.Context, name string) error {
+	query := `
+	DELETE FROM project WHERE name=$1
+`
+	_, err := s.db.ExecContext(ctx, query, name)
+	if err != nil {
+		return err
+	}
+	return nil
+}
