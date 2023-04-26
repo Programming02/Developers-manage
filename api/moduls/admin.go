@@ -20,6 +20,8 @@ type Project struct {
 	Attachments string `json:"attachment,omitempty"`
 }
 
+type ListProjects []Project
+
 type Task struct {
 	Id           string `json:"id,omitempty"`
 	Title        string `json:"title,omitempty"`

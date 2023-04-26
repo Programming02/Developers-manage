@@ -155,3 +155,22 @@ func (s Server) DeleteTask(ctx context.Context, id string) error {
 	}
 	return nil
 }
+
+func (s Server) ProjectList(ctx context.Context) (moduls.ListProjects, error) {
+	query := `
+	SELECT * FROM project
+`
+	rows, err := s.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	res := moduls.ListProjects{}
+	for rows.Next() {
+		project := moduls.Project{}
+		if err := rows.Scan(project.Id, project.Name, project.StartDate, project.EndDate, project.Status, project.Attachments); err != nil {
+			return nil, err
+		}
+		res = append(res, project)
+	}
+	return res, nil
+}
