@@ -12,6 +12,9 @@ import (
 )
 
 func Connect(cfg config.Config) (*sqlx.DB, error) {
+	fmt.Println(fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		cfg.PostgresHost, cfg.PostgresPort, cfg.PostgresUser, cfg.PostgresPassword, cfg.PostgresDB,
+	))
 	db, err := sqlx.Connect(
 		"postgres",
 		fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",

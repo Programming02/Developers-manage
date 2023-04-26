@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "github.com/joho/godotenv/autoload" // load .env file automatically
 	"github.com/programming02/osg/api/controller"
 	"github.com/programming02/osg/config"
 	"github.com/programming02/osg/pkg"

@@ -9,13 +9,13 @@ CREATE TABLE users (
 );
 
 
-CREATE TABLE project (
+CREATE TABLE project(
     id TEXT NOT NULL PRIMARY KEY ,
     name TEXT NOT NULL ,
-    start_date DATE NOT NULL ,
+    start_date DATE DEFAULT CURRENT_DATE,
     end_date DATE NOT NULL ,
     status TEXT NOT NULL ,
-    teamlead_id UUID NOT NULL REFERENCES user(id),
+    teamlead_id UUID NOT NULL REFERENCES users(id),
     attachments TEXT
 );
 
@@ -24,7 +24,7 @@ CREATE TABLE task (
     id TEXT NOT NULL PRIMARY KEY ,
     title TEXT NOT NULL ,
     description TEXT NOT NULL ,
-    start_at TIMESTAMP NOT NULL ,
+    start_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     finish_at TIMESTAMP NOT NULL ,
     status TEXT NOT NULL,
     started_at TIMESTAMP NOT NULL ,

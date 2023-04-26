@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/programming02/osg/api/moduls"
+	"time"
+
 	// "go get -u github.com/swaggo/files"
 	// "go get -u github.com/swaggo/gin-swagger"
 	"net/http"
@@ -19,7 +21,7 @@ func (a Api) GetAdmin(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"user_id":   b.UserId,
+		"user_id":   b.Id,
 		"full_name": b.FullName,
 		"avatar":    b.Avatar,
 		"Role":      b.Role,
@@ -31,9 +33,18 @@ func (a Api) GetAdmin(c *gin.Context) {
 
 func (a Api) CreateAdmin(c *gin.Context) {
 	admin := moduls.Users{}
+
 	if err := c.ShouldBindJSON(&admin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
+		})
+		return
+	}
+
+	_, err := time.Parse("2006-01-02", admin.BirthDay)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err,
 		})
 		return
 	}
@@ -72,7 +83,7 @@ func (a Api) CreateAdmin(c *gin.Context) {
 */
 
 func (a Api) DeleteAdmin(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 
 	err := a.Repo.DeleteUser(c.Request.Context(), id)
 	if err != nil {
@@ -91,7 +102,7 @@ func (a Api) GetProject(c *gin.Context) {
 	b, err := a.Repo.GetProject(context.Background(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
@@ -109,7 +120,7 @@ func (a Api) GetProject(c *gin.Context) {
 
 func (a Api) CreateProject(c *gin.Context) {
 	project := moduls.Project{}
-	if err := c.ShouldBindJSON(project); err != nil {
+	if err := c.ShouldBindJSON(&project); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
 		})
@@ -127,9 +138,9 @@ func (a Api) CreateProject(c *gin.Context) {
 }
 
 func (a Api) DeleteProject(c *gin.Context) {
-	name := c.Query("name")
+	id := c.Param("id")
 
-	err := a.Repo.DeleteProject(context.Background(), name)
+	err := a.Repo.DeleteProject(context.Background(), id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err.Error(),
@@ -169,7 +180,7 @@ func (a Api) GetTask(c *gin.Context) {
 func (a Api) CreateTask(c *gin.Context) {
 	task := moduls.Task{}
 
-	if err := c.ShouldBindJSON(task); err != nil {
+	if err := c.ShouldBindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err,
 		})
@@ -179,6 +190,20 @@ func (a Api) CreateTask(c *gin.Context) {
 	if err := a.Repo.CreateTask(context.Background(), task); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"ok": true,
+	})
+}
+
+func (a Api) DeleteTask(c *gin.Context) {
+	id := c.Param("id")
+	err := a.Repo.DeleteTask(context.Background(), id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err,
 		})
 		return
 	}
