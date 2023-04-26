@@ -61,7 +61,7 @@ func (a Api) CreateAdmin(c *gin.Context) {
 	})
 }
 
-/* func (a Api) UpdateAdmin(c *gin.Context) {
+func (a Api) UpdateAdmin(c *gin.Context) {
 	admin := moduls.Users{}
 	if err := c.ShouldBindJSON(admin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -80,7 +80,6 @@ func (a Api) CreateAdmin(c *gin.Context) {
 	})
 
 }
-*/
 
 func (a Api) DeleteAdmin(c *gin.Context) {
 	id := c.Param("id")
@@ -132,6 +131,28 @@ func (a Api) CreateProject(c *gin.Context) {
 		})
 		return
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"ok": true,
+	})
+}
+
+func (a Api) UpdateProject(c *gin.Context) {
+	project := moduls.Project{}
+
+	if err := c.ShouldBindJSON(&project); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+	err := a.Repo.UpdateProject(context.Background(), project)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"ok": true,
 	})
@@ -196,6 +217,29 @@ func (a Api) CreateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"ok": true,
 	})
+}
+
+func (a Api) UpdateTask(c *gin.Context) {
+	task := moduls.Task{}
+	if err := c.ShouldBindJSON(task); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+
+	err := a.Repo.UpdateTask(context.Background(), task)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"ok": true,
+	})
+
 }
 
 func (a Api) DeleteTask(c *gin.Context) {
