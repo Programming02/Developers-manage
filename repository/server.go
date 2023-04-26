@@ -135,9 +135,22 @@ func (s Server) GetTask(ctx context.Context, id string) (moduls.Task, error) {
 
 func (s Server) CreateTask(ctx context.Context, t moduls.Task) error {
 	_, err := s.db.Exec(`
-	INSERT INTO task VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+	INSERT INTO task (id, title, description, finish_at, status, started_at, finished_at, programmer_id, attachments, project_id) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 `,
-		t.Id, t.Title, t.Description, t.StartAt, t.FinishAt, t.Status, t.StartedAt, t.FinishedAt, t.ProgrammerId, t.Attachments, t.ProjectId,
+		t.Id, t.Title, t.Description, t.FinishAt, t.Status, t.StartedAt, t.FinishedAt, t.ProgrammerId, t.Attachments, t.ProjectId,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s Server) UpdateTask(ctx context.Context, t moduls.Task) error {
+	_, err := s.db.ExecContext(ctx, `
+	UPDATE task SET id=$1, title=$2, description=$3, finish_at=$4, status=$5, started_at=$6, finished_at=$7, programmer_id=$8, attachments=$9, project_id=$10
+`,
+		t.Id, t.Title, t.Description, t.FinishAt, t.Status, t.StartedAt, t.FinishedAt, t.ProgrammerId, t.ProjectId,
 	)
 	if err != nil {
 		return err
@@ -156,7 +169,7 @@ func (s Server) DeleteTask(ctx context.Context, id string) error {
 	return nil
 }
 
-func (s Server) ProjectList(ctx context.Context) (moduls.ListProjects, error) {
+func (s Server) ProjectList(ctx context.Context) ([]moduls.Project, error) {
 	query := `
 	SELECT * FROM project
 `

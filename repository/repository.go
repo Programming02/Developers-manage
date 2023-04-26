@@ -19,7 +19,6 @@ type Repository interface {
 	UpdateTask(ctx context.Context, t moduls.Task) error
 	DeleteTask(ctx context.Context, id string) error
 	ProjectList(ctx context.Context) ([]moduls.Project, error)
-	// TODO programmer/project_list
 	// TODO write comment
 	// TODO programmer/attendance
 }
