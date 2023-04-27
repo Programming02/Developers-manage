@@ -10,6 +10,8 @@ type Users struct {
 	Positions   string `json:"position,omitempty"`
 }
 
+type ListUsers []Users
+
 type Project struct {
 	Id          string `json:"id,omitempty"`
 	Name        string `json:"name,omitempty"`
@@ -34,4 +36,9 @@ type Task struct {
 	ProgrammerId string `json:"programmer_id,omitempty"`
 	Attachments  string `json:"attachments,omitempty"`
 	ProjectId    string `json:"project_id,omitempty"`
+}
+
+type CheckTeamLeadRequest struct {
+	UserId    string `json:"userId,omitempty"`
+	ProjectId string `json:"projectId,omitempty"`
 }

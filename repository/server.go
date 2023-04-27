@@ -31,91 +31,91 @@ func (s Server) GetUser(ctx context.Context, id string) (models.Users, error) {
 	return user, nil
 }
 
-func (s Server) CreateUser(ctx context.Context, d models.Users) error {
-	_, err := s.db.Exec(`
-	insert into users (id, full_name, avatar, role, birth_day, phone, position) values ($1, $2, $3, $4, $5, $6, $7) `,
-		d.Id, d.FullName, d.Avatar, d.Role, d.BirthDay, d.PhoneNumber, d.Positions,
-	)
+//func (s Server) CreateUser(ctx context.Context, d models.Users) error {
+//	_, err := s.db.Exec(`
+//	insert into users (id, full_name, avatar, role, birth_day, phone, position) values ($1, $2, $3, $4, $5, $6, $7) `,
+//		d.Id, d.FullName, d.Avatar, d.Role, d.BirthDay, d.PhoneNumber, d.Positions,
+//	)
+//
+//	if err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}
 
-	if err != nil {
-		return err
-	}
+//func (s Server) UpdateUser(ctx context.Context, u models.Users) error {
+//	_, err := s.db.ExecContext(ctx, `
+//	UPDATE user SET id=$1, full_name=$2, avatar=$3, role=$4, birth_day=$5, phone=$6, position=$7
+//`,
+//		u.Id, u.FullName, u.Avatar, u.Role, u.Role, u.BirthDay, u.PhoneNumber, u.Positions,
+//	)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
-	return nil
-}
+//func (s Server) DeleteUser(ctx context.Context, id string) error {
+//	query := `
+//	DELETE FROM users WHERE id=$1
+//`
+//	_, err := s.db.ExecContext(ctx, query, id)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
-func (s Server) UpdateUser(ctx context.Context, u models.Users) error {
-	_, err := s.db.ExecContext(ctx, `
-	UPDATE user SET id=$1, full_name=$2, avatar=$3, role=$4, birth_day=$5, phone=$6, position=$7
-`,
-		u.Id, u.FullName, u.Avatar, u.Role, u.Role, u.BirthDay, u.PhoneNumber, u.Positions,
-	)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+//func (s Server) GetProject(ctx context.Context, id string) (models.Project, error) {
+//	query := `
+//	SELECT * FROM project WHERE id=$1
+//`
+//	var project models.Project
+//	err := s.db.QueryRowContext(ctx, query, id).Scan(&project.Id, &project.Name, &project.StartDate, &project.EndDate, &project.Status, &project.TeamLeadId, &project.Attachments)
+//
+//	if err != nil {
+//		return models.Project{}, err
+//	}
+//
+//	return project, nil
+//}
 
-func (s Server) DeleteUser(ctx context.Context, id string) error {
-	query := `
-	DELETE FROM users WHERE id=$1
-`
-	_, err := s.db.ExecContext(ctx, query, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s Server) GetProject(ctx context.Context, id string) (models.Project, error) {
-	query := `
-	SELECT * FROM project WHERE id=$1
-`
-	var project models.Project
-	err := s.db.QueryRowContext(ctx, query, id).Scan(&project.Id, &project.Name, &project.StartDate, &project.EndDate, &project.Status, &project.TeamLeadId, &project.Attachments)
-
-	if err != nil {
-		return models.Project{}, err
-	}
-
-	return project, nil
-}
-
-func (s Server) CreateProject(ctx context.Context, d models.Project) error {
-	_, err := s.db.Exec(`
-	INSERT INTO project (id, name, end_date, status, teamlead_id, attachments)
-	VALUES ($1, $2, $3, $4, $5, $6)
-`,
-		d.Id, d.Name, d.EndDate, d.Status, d.TeamLeadId, d.Attachments,
-	)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s Server) UpdateProject(ctx context.Context, p models.Project) error {
-	_, err := s.db.ExecContext(ctx, `
-	UPDATE project SET id=$1, name=$2, end_date=$3, status=$4, teamlead_id=$5, attachments=$6
-`,
-		p.Id, p.Name, p.EndDate, p.Status, p.TeamLeadId, p.Attachments,
-	)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (s Server) DeleteProject(ctx context.Context, id string) error {
-	query := `
-	DELETE FROM project WHERE id=$1
-`
-	_, err := s.db.ExecContext(ctx, query, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
+//func (s Server) CreateProject(ctx context.Context, d models.Project) error {
+//	_, err := s.db.Exec(`
+//	INSERT INTO project (id, name, end_date, status, teamlead_id, attachments)
+//	VALUES ($1, $2, $3, $4, $5, $6)
+//`,
+//		d.Id, d.Name, d.EndDate, d.Status, d.TeamLeadId, d.Attachments,
+//	)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
+//
+//func (s Server) UpdateProject(ctx context.Context, p models.Project) error {
+//	_, err := s.db.ExecContext(ctx, `
+//	UPDATE project SET id=$1, name=$2, end_date=$3, status=$4, teamlead_id=$5, attachments=$6
+//`,
+//		p.Id, p.Name, p.EndDate, p.Status, p.TeamLeadId, p.Attachments,
+//	)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
+//
+//func (s Server) DeleteProject(ctx context.Context, id string) error {
+//	query := `
+//	DELETE FROM project WHERE id=$1
+//`
+//	_, err := s.db.ExecContext(ctx, query, id)
+//	if err != nil {
+//		return err
+//	}
+//	return nil
+//}
 
 func (s Server) GetTask(ctx context.Context, id string) (models.Task, error) {
 	query := `
@@ -169,21 +169,21 @@ func (s Server) DeleteTask(ctx context.Context, id string) error {
 	return nil
 }
 
-func (s Server) ProjectList(ctx context.Context) ([]models.Project, error) {
-	query := `
-	SELECT * FROM project
-`
-	rows, err := s.db.QueryContext(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	res := models.ListProjects{}
-	for rows.Next() {
-		project := models.Project{}
-		if err := rows.Scan(project.Id, project.Name, project.StartDate, project.EndDate, project.Status, project.Attachments); err != nil {
-			return nil, err
-		}
-		res = append(res, project)
-	}
-	return res, nil
-}
+//func (s Server) ProjectList(ctx context.Context) ([]models.Project, error) {
+//	query := `
+//	SELECT * FROM project
+//`
+//	rows, err := s.db.QueryContext(ctx, query)
+//	if err != nil {
+//		return nil, err
+//	}
+//	res := models.ListProjects{}
+//	for rows.Next() {
+//		project := models.Project{}
+//		if err := rows.Scan(project.Id, project.Name, project.StartDate, project.EndDate, project.Status, project.Attachments); err != nil {
+//			return nil, err
+//		}
+//		res = append(res, project)
+//	}
+//	return res, nil
+//}
