@@ -3,7 +3,7 @@ package controller
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/programming02/osg/api/moduls"
+	"github.com/programming02/osg/api/models"
 	"time"
 
 	// "go get -u github.com/swaggo/files"

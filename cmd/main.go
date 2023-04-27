@@ -12,10 +12,7 @@ import (
 
 func main() {
 
-	cfg, err := config.Load()
-	if err != nil {
-		panic(err)
-	}
+	cfg := config.Load()
 
 	db, err := pkg.Connect(cfg)
 	if err != nil {
