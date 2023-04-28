@@ -6,8 +6,13 @@ import (
 )
 
 type Programmer interface {
-	CreateTask(ctx context.Context, task models.Task) error
-	UpdateTask(ctx context.Context, task models.Task) error
+	CreateTask(ctx context.Context, t models.Task) error
+	UpdateTask(ctx context.Context, t models.Task) error
 	DeleteTask(ctx context.Context, id string) error
 	GetTask(ctx context.Context, id string) (models.Task, error)
+	CreateCommit(ctx context.Context, c models.Commit) error
+	UpdateCommit(ctx context.Context, c models.Commit) error
+	DeleteCommit(ctx context.Context, id string) error
+	GetCommitList(ctx context.Context) ([]models.Commit, error)
+	UserRole(ctx context.Context, role models.UserRole) (string, error)
 }

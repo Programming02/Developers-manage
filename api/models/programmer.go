@@ -24,6 +24,11 @@ type Task struct {
 	ProjectId    string `json:"project_id,omitempty"`
 }
 
+type UserRole struct {
+	UserId    string `json:"userId"`
+	ProjectId string `json:"project_id"`
+}
+
 type ListProjects []Project
 
 type Commit struct {

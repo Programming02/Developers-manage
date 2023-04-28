@@ -17,8 +17,8 @@ func NewProgrammerRepo(db *sqlx.DB) repo.Programmer {
 	}
 }
 
-func (s programmerRepo) CreateTask(ctx context.Context, t models.Task) error {
-	_, err := s.db.Exec(`
+func (p programmerRepo) CreateTask(ctx context.Context, t models.Task) error {
+	_, err := p.db.Exec(`
 	INSERT INTO task (id, title, description, finish_at, status, started_at, finished_at, programmer_id, attachments, project_id) 
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 `,
@@ -30,8 +30,8 @@ func (s programmerRepo) CreateTask(ctx context.Context, t models.Task) error {
 	return nil
 }
 
-func (s programmerRepo) UpdateTask(ctx context.Context, t models.Task) error {
-	_, err := s.db.ExecContext(ctx, `
+func (p programmerRepo) UpdateTask(ctx context.Context, t models.Task) error {
+	_, err := p.db.ExecContext(ctx, `
 	UPDATE task SET id=$1, title=$2, description=$3, finish_at=$4, status=$5, started_at=$6, finished_at=$7, programmer_id=$8, attachments=$9, project_id=$10
 `,
 		t.Id, t.Title, t.Description, t.FinishAt, t.Status, t.StartedAt, t.FinishedAt, t.ProgrammerId, t.ProjectId,
@@ -42,23 +42,23 @@ func (s programmerRepo) UpdateTask(ctx context.Context, t models.Task) error {
 	return nil
 }
 
-func (s programmerRepo) DeleteTask(ctx context.Context, id string) error {
+func (p programmerRepo) DeleteTask(ctx context.Context, id string) error {
 	query := `
 	DELETE FROM task WHERE id=$1
 `
-	_, err := s.db.ExecContext(ctx, query, id)
+	_, err := p.db.ExecContext(ctx, query, id)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s programmerRepo) GetTask(ctx context.Context, id string) (models.Task, error) {
+func (p programmerRepo) GetTask(ctx context.Context, id string) (models.Task, error) {
 	query := `
 	SELECT * FROM task WHERE id=$1
 `
 	task := models.Task{}
-	rows, err := s.db.QueryContext(ctx, query, id)
+	rows, err := p.db.QueryContext(ctx, query, id)
 	if err != nil {
 		return models.Task{}, err
 	}
@@ -67,4 +67,20 @@ func (s programmerRepo) GetTask(ctx context.Context, id string) (models.Task, er
 		return models.Task{}, err
 	}
 	return task, nil
+}
+
+func (p programmerRepo) CreateCommit(ctx context.Context, c models.Commit) error {
+	return nil
+}
+
+func (p programmerRepo) UpdateCommit(ctx context.Context, c models.Commit) error {
+	return nil
+}
+
+func (p programmerRepo) DeleteCommit(ctx context.Context, id string) error {
+	return nil
+}
+
+func (p programmerRepo) GetCommitList(ctx context.Context) ([]models.Commit, error) {
+	return []models.Commit{}, nil
 }

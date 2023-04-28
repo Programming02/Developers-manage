@@ -1,13 +1,15 @@
 package controller
 
-import "github.com/programming02/osg/repository"
-
 type Api struct {
-	Repo repository.Repository
+	AdminService      *AdminService
+	ProgrammerService *ProgrammerService
+	RegisterService   *RegisterService
 }
 
-func NewRepo(repo repository.Repository) *Api {
+func NewApi(admin *AdminService, programmer *ProgrammerService, register *RegisterService) *Api {
 	return &Api{
-		Repo: repo,
+		AdminService:      admin,
+		ProgrammerService: programmer,
+		RegisterService:   register,
 	}
 }
