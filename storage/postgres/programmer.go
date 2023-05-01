@@ -18,7 +18,7 @@ func NewProgrammerRepo(db *sqlx.DB) repo.Programmer {
 }
 
 func (p programmerRepo) CreateTask(ctx context.Context, t models.Task) error {
-	_, err := p.db.Exec(`
+	_, err := p.db.ExecContext(ctx, `
 	INSERT INTO task (id, title, description, finish_at, status, started_at, finished_at, programmer_id, attachments, project_id) 
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 `,
@@ -58,29 +58,77 @@ func (p programmerRepo) GetTask(ctx context.Context, id string) (models.Task, er
 	SELECT * FROM task WHERE id=$1
 `
 	task := models.Task{}
-	rows, err := p.db.QueryContext(ctx, query, id)
+	err := p.db.QueryRowContext(ctx, query, task).Scan(&task.Id, task.Title, task.Description, task.StartAt, task.FinishAt, task.Status, task.StartedAt, task.FinishedAt, task.ProgrammerId, task.ProjectId)
 	if err != nil {
-		return models.Task{}, err
-	}
-
-	if err := rows.Scan(&task.Id, task.Title, task.Description, task.StartAt, task.FinishAt, task.Status, task.StartedAt, task.FinishedAt, task.ProgrammerId, task.ProjectId); err != nil {
 		return models.Task{}, err
 	}
 	return task, nil
 }
 
 func (p programmerRepo) CreateCommit(ctx context.Context, c models.Commit) error {
+	query := `
+	INSERT INTO comments VALUES ($1, $2, $3)
+`
+	_, err := p.db.ExecContext(ctx, query, c.TaskID, c.ProgrammerID, c.CreatedAt)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (p programmerRepo) UpdateCommit(ctx context.Context, c models.Commit) error {
+func (p programmerRepo) UpdateCommit(ctx context.Context, c models.Commit, userID string) error {
+	query := `
+	UPDATE comments SET task_id=$1, user_id=$2, created_at=$3 WHERE id=$4
+`
+	_, err := p.db.ExecContext(ctx, query, c.TaskID, c.ProgrammerID, c.CreatedAt, userID)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (p programmerRepo) DeleteCommit(ctx context.Context, id string) error {
+	query := `
+	DELETE FROM comments WHERE id=$1
+`
+	_, err := p.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-func (p programmerRepo) GetCommitList(ctx context.Context) ([]models.Commit, error) {
-	return []models.Commit{}, nil
+func (p programmerRepo) GetCommitList(ctx context.Context, taskId string) ([]models.Commit, error) {
+	rows, err := p.db.QueryContext(ctx, `
+	SELECT * FROM commit WHERE id=$1
+`,
+		taskId)
+	if err != nil {
+		return []models.Commit{}, err
+	}
+	res := []models.Commit{}
+	for rows.Next() {
+		com := models.Commit{}
+		err := rows.Scan(&com.TaskID, &com.ProgrammerID, &com.CreatedAt)
+		if err != nil {
+			return []models.Commit{}, err
+		}
+		res = append(res, com)
+	}
+	return res, nil
+}
+
+func (p programmerRepo) CreateAttendance(ctx context.Context, req models.Attendance) error {
+	_, err := p.db.ExecContext(ctx, `
+	INSERT INTO attendance VALUES ($1, $2, $3)
+`,
+		req.Type, req.UserId, req.CreatedAt)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p programmerRepo) UserRole(ctx context.Context, role models.UserRole) (string, error) {
+	return "", nil
 }
