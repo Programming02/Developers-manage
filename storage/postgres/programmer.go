@@ -106,7 +106,7 @@ func (p programmerRepo) GetCommitList(ctx context.Context, taskId string) ([]mod
 	if err != nil {
 		return []models.Commit{}, err
 	}
-	res := []models.Commit{}
+	var res []models.Commit
 	for rows.Next() {
 		com := models.Commit{}
 		err := rows.Scan(&com.TaskID, &com.ProgrammerID, &com.CreatedAt)
