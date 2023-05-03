@@ -5,7 +5,6 @@ import (
 	"github.com/programming02/osg/api/controller"
 	"github.com/programming02/osg/config"
 	"github.com/programming02/osg/pkg"
-	"github.com/programming02/osg/repository"
 	"github.com/programming02/osg/router"
 	"net/http"
 )
@@ -18,9 +17,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer db.Close()
 
-	s := repository.New(db)
-	a := controller.NewRepo(s)
+	a := controller.NewApi(controller.NewAdminService(db), controller.NewProgrammerService(db), controller.NewRegisterService(db))
 	e := router.InitRouter(a)
 	http.ListenAndServe("localhost:8080", e)
 }
