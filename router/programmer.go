@@ -9,16 +9,19 @@ import (
 
 func ProgrammerRouter(c *controller.Api) {
 	r := gin.Default()
-	cfg := config.Load()
+	cfg, err := config.Load() //config.Load()
+	if err != nil {
+		return
+	}
 
 	r.Use(middleware.Authorizer(cfg))
 
-	r.GET("/task/", c.ProgrammerService.GetTask)
-	r.GET("/commits/", c.ProgrammerService.GetCommits)
+	r.GET("/task/", c.GetTask)
+	r.GET("/commits/", c.GetCommits)
 
-	r.PUT("/up_task/", c.ProgrammerService.UpdateTask)
-	r.PUT("/up_commit/", c.ProgrammerService.UpdateCommit)
+	r.PUT("/up_task/", c.UpdateTask)
+	r.PUT("/up_commit/", c.UpdateCommit)
 
-	r.DELETE("/del_task/", c.ProgrammerService.DeleteTask)
-	r.DELETE("/del_commit/", c.ProgrammerService.DeleteCommit)
+	r.DELETE("/del_task/", c.DeleteTask)
+	r.DELETE("/del_commit/", c.DeleteCommit)
 }

@@ -3,31 +3,20 @@ package controller
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 	"github.com/programming02/osg/api/models"
 	"github.com/programming02/osg/jwt"
-	"github.com/programming02/osg/storage"
 	"net/http"
 	"strings"
 )
 
-type RegisterService struct {
-	storage storage.IStorage
-}
-
-func NewRegisterService(db *sqlx.DB) *RegisterService {
-	return &RegisterService{
-		storage: storage.New(db),
-	}
-}
-
-func (r *RegisterService) Login(req models.RegisterRequest) (models.RegisterResponse, error) {
-	res, err := r.storage.Register().Login(req)
-	if err != nil {
-		return models.RegisterResponse{}, err
-	}
-	return res, nil
-}
+//
+//func (r *RegisterService) Login(req models.RegisterRequest) (models.RegisterResponse, error) {
+//	res, err := r.storage.Register().Login(req)
+//	if err != nil {
+//		return models.RegisterResponse{}, err
+//	}
+//	return res, nil
+//}
 
 func (a Api) Login(c *gin.Context) {
 	req := models.RegisterRequest{}
@@ -45,7 +34,7 @@ func (a Api) Login(c *gin.Context) {
 		return
 	}
 
-	res, err := a.RegisterService.Login(req)
+	res, err := a.storage.Register().Login(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),

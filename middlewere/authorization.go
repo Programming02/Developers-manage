@@ -5,9 +5,31 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/programming02/osg/config"
 	_ "github.com/programming02/osg/config"
+	"github.com/programming02/osg/jwt"
 	"log"
 	"net/http"
 )
+
+// JWTRoleAuthorizer is a structure for a Role Authorizer type
+type JWTRoleAuthorizer struct {
+	enforcer   *casbin.Enforcer
+	SigningKey []byte
+	//	logger     logger.Logger
+}
+
+// NewJWTRoleAuthorizer creates and returns new Role Authorizer
+func NewJWTRoleAuthorizer(cfg *config.Config) (*JWTRoleAuthorizer, error) {
+	enforcer, err := casbin.NewEnforcer(cfg.CasbinConfigPath, cfg.MiddlewareRolesPath)
+	if err != nil {
+		log.Fatal("could not initialize new enforcer:", err.Error())
+		return nil, err
+	}
+
+	return &JWTRoleAuthorizer{
+		enforcer:   enforcer,
+		SigningKey: []byte(cfg.JWTSecretKey),
+	}, nil
+}
 
 func Authorizer(cfg config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -18,7 +40,7 @@ func Authorizer(cfg config.Config) gin.HandlerFunc {
 			return
 		}
 
-		claims, err := extractClaims(accessToken, []byte(cfg.SigningKey))
+		claims, err := jwt.ExtractClaims(accessToken, []byte(cfg.SigningKey))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, map[string]string{
 				"error": err.Error(),

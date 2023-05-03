@@ -1,15 +1,13 @@
 package controller
 
+import "github.com/programming02/osg/storage"
+
 type Api struct {
-	AdminService      *AdminService
-	ProgrammerService *ProgrammerService
-	RegisterService   *RegisterService
+	storage storage.IStorage
 }
 
-func NewApi(admin *AdminService, programmer *ProgrammerService, register *RegisterService) *Api {
+func NewApi(iStorage storage.IStorage) *Api {
 	return &Api{
-		AdminService:      admin,
-		ProgrammerService: programmer,
-		RegisterService:   register,
+		storage: iStorage,
 	}
 }

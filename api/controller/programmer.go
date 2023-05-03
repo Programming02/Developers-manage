@@ -6,24 +6,12 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/jmoiron/sqlx"
 	"github.com/programming02/osg/api/models"
 	"github.com/programming02/osg/jwt"
-	"github.com/programming02/osg/storage"
 	"net/http"
 )
 
-type ProgrammerService struct {
-	storage storage.IStorage
-}
-
-func NewProgrammerService(db *sqlx.DB) *ProgrammerService {
-	return &ProgrammerService{
-		storage: storage.New(db),
-	}
-}
-
-func (p ProgrammerService) CreateTask(c *gin.Context) {
+func (p Api) CreateTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -38,7 +26,7 @@ func (p ProgrammerService) CreateTask(c *gin.Context) {
 		return
 	}
 
-	role, err := p.UserRole(context.Background(), models.UserRole{
+	role, err := p.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: task.ProjectId,
 	})
@@ -60,7 +48,7 @@ func (p ProgrammerService) CreateTask(c *gin.Context) {
 	})
 }
 
-func (p ProgrammerService) UpdateTask(c *gin.Context) {
+func (p Api) UpdateTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -75,10 +63,13 @@ func (p ProgrammerService) UpdateTask(c *gin.Context) {
 		return
 	}
 
-	role, err := p.UserRole(context.Background(), models.UserRole{
-		UserId:    user.UserID.String(),
-		ProjectId: task.ProjectId,
+	role, err := p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+		UserId: user.UserID.String(),
 	})
+	//role, err := p.UserRole(context.Background(), models.UserRole{
+	//	UserId:    user.UserID.String(),
+	//	ProjectId: task.ProjectId,
+	//})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 	}
@@ -100,7 +91,7 @@ func (p ProgrammerService) UpdateTask(c *gin.Context) {
 
 }
 
-func (p ProgrammerService) DeleteTask(c *gin.Context) {
+func (p Api) DeleteTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -120,7 +111,7 @@ func (p ProgrammerService) DeleteTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 	}
 
-	role, err := p.UserRole(context.Background(), models.UserRole{
+	role, err := p.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: task.ProjectId,
 	})
@@ -143,7 +134,7 @@ func (p ProgrammerService) DeleteTask(c *gin.Context) {
 	})
 }
 
-func (p ProgrammerService) GetTask(c *gin.Context) {
+func (p Api) GetTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -162,7 +153,7 @@ func (p ProgrammerService) GetTask(c *gin.Context) {
 			"err": err.Error(),
 		})
 	}
-	_, err = p.UserRole(context.Background(), models.UserRole{
+	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: t.ProjectId,
 	})
@@ -195,7 +186,7 @@ func (p ProgrammerService) GetTask(c *gin.Context) {
 	//})
 }
 
-func (p ProgrammerService) CreateCommit(c *gin.Context) {
+func (p Api) CreateCommit(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -214,7 +205,7 @@ func (p ProgrammerService) CreateCommit(c *gin.Context) {
 			"err": err.Error(),
 		})
 	}
-	_, err = p.UserRole(context.Background(), models.UserRole{
+	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: t.ProjectId,
 	})
@@ -237,7 +228,7 @@ func (p ProgrammerService) CreateCommit(c *gin.Context) {
 
 }
 
-func (p ProgrammerService) UpdateCommit(c *gin.Context) {
+func (p Api) UpdateCommit(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -258,7 +249,7 @@ func (p ProgrammerService) UpdateCommit(c *gin.Context) {
 	})
 }
 
-func (p ProgrammerService) GetCommits(c *gin.Context) {
+func (p Api) GetCommits(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -274,7 +265,7 @@ func (p ProgrammerService) GetCommits(c *gin.Context) {
 			"err": err.Error(),
 		})
 	}
-	_, err = p.UserRole(context.Background(), models.UserRole{
+	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: t.ProjectId,
 	})
@@ -294,11 +285,34 @@ func (p ProgrammerService) GetCommits(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (p ProgrammerService) DeleteCommit(c *gin.Context) {
+func (p Api) DeleteCommit(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 	}
+	id := c.Param("id")
+	if _, err = uuid.Parse(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"err": errors.New("there's a mistake on id "),
+		})
+	}
+
+	t, err := p.storage.Programmer().GetTask(context.Background(), id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err": err.Error(),
+		})
+	}
+	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+		UserId:    user.UserID.String(),
+		ProjectId: t.ProjectId,
+	})
+	if errors.Is(err, sql.ErrNoRows) {
+		c.JSON(http.StatusInternalServerError, gin.H{"err": errors.New("you don't have access")})
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"err": err.Error(),
+	})
 
 	err = p.storage.Programmer().DeleteCommit(context.Background(), user.UserID.String())
 	if err != nil {
@@ -313,7 +327,7 @@ func (p ProgrammerService) DeleteCommit(c *gin.Context) {
 	})
 }
 
-func (p ProgrammerService) CreateAttendance(c *gin.Context) {
+func (p Api) CreateAttendance(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -335,6 +349,6 @@ func (p ProgrammerService) CreateAttendance(c *gin.Context) {
 	}
 }
 
-func (p ProgrammerService) UserRole(ctx context.Context, role models.UserRole) (string, error) {
+func (p Api) UserRole(ctx context.Context, role models.UserRole) (string, error) {
 	return p.storage.Programmer().UserRole(ctx, role)
 }

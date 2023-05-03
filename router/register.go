@@ -9,7 +9,10 @@ import (
 
 func RegisterROuter(c controller.Api) {
 	r := gin.Default()
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		return
+	}
 
 	r.Use(middleware.Authorizer(cfg))
 

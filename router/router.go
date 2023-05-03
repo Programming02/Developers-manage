@@ -9,17 +9,20 @@ import (
 
 func InitRouter(a *controller.Api) *gin.Engine {
 	r := gin.Default()
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		return nil
+	}
 
 	r.Use(middleware.Authorizer(cfg))
 
-	r.GET("/admin/:id/", a.AdminService.GetAdmin)
-	r.POST("/admin/", a.AdminService.CreateAdmin)
-	r.DELETE("/del_admin/:id/", a.AdminService.DeleteAdmin)
+	r.GET("/admin/:id/", a.GetAdmin)
+	r.POST("/admin/", a.CreateAdmin)
+	r.DELETE("/del_admin/:id/", a.DeleteAdmin)
 	//r.PUT("user_update", a.UpdateAdmin)
-	r.GET("/project/:id/", a.AdminService.GetProject)
-	r.POST("/project/", a.AdminService.CreateProject)
-	r.DELETE("/del_project/:id/", a.AdminService.DeleteProject)
+	r.GET("/project/:id/", a.GetProject)
+	r.POST("/project/", a.CreateProject)
+	r.DELETE("/del_project/:id/", a.DeleteProject)
 	//r.PUT("up_proj/",)
 	//r.POST("/task/", a.AdminService.CreateTask)
 	return r

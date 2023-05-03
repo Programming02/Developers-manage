@@ -9,22 +9,25 @@ import (
 
 func AdminRouter(a controller.Api) {
 	r := gin.Default()
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		return
+	}
 
 	r.Use(middleware.Authorizer(cfg))
 
-	r.GET("/get_admin/:id/", a.AdminService.CreateAdmin)
-	r.GET("/get_project/", a.AdminService.GetProject)
-	r.GET("/get_users/", a.AdminService.GetUserList)
-	r.GET("/get_projects/", a.AdminService.ProjectList)
+	r.GET("/get_admin/:id/", a.CreateAdmin)
+	r.GET("/get_project/", a.GetProject)
+	r.GET("/get_users/", a.GetUserList)
+	r.GET("/get_projects/", a.ProjectList)
 
-	r.POST("/admin/", a.AdminService.CreateAdmin)
-	r.POST("/project/", a.AdminService.CreateProject)
+	r.POST("/admin/", a.CreateAdmin)
+	r.POST("/project/", a.CreateProject)
 
-	r.PUT("/up_user/", a.AdminService.UpdateAdmin)
-	r.PUT("/up_project/", a.AdminService.UpdateProject)
+	r.PUT("/up_user/", a.UpdateAdmin)
+	r.PUT("/up_project/", a.UpdateProject)
 
-	r.DELETE("/del_admin/:id/", a.AdminService.DeleteAdmin)
-	r.DELETE("/del_project/", a.AdminService.DeleteProject)
+	r.DELETE("/del_admin/:id/", a.DeleteAdmin)
+	r.DELETE("/del_project/", a.DeleteProject)
 
 }

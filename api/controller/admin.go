@@ -3,27 +3,13 @@ package controller
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 	"github.com/programming02/osg/api/models"
-	"github.com/programming02/osg/storage"
 	"time"
 
-	// "go get -u github.com/swaggo/files"
-	// "go get -u github.com/swaggo/gin-swagger"
 	"net/http"
 )
 
-type AdminService struct {
-	storage storage.IStorage
-}
-
-func NewAdminService(db *sqlx.DB) *AdminService {
-	return &AdminService{
-		storage: storage.New(db),
-	}
-}
-
-func (a AdminService) GetAdmin(c *gin.Context) {
+func (a Api) GetAdmin(c *gin.Context) {
 	id := c.Param("id")
 	b, err := a.storage.Admin().GetUser(c.Request.Context(), id)
 	if err != nil {
@@ -43,7 +29,7 @@ func (a AdminService) GetAdmin(c *gin.Context) {
 	})
 }
 
-func (a AdminService) CreateAdmin(c *gin.Context) {
+func (a Api) CreateAdmin(c *gin.Context) {
 	admin := models.Users{}
 
 	if err := c.ShouldBindJSON(&admin); err != nil {
@@ -73,7 +59,7 @@ func (a AdminService) CreateAdmin(c *gin.Context) {
 	})
 }
 
-func (a AdminService) UpdateAdmin(c *gin.Context) {
+func (a Api) UpdateAdmin(c *gin.Context) {
 	admin := models.Users{}
 	if err := c.ShouldBindJSON(admin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -93,7 +79,7 @@ func (a AdminService) UpdateAdmin(c *gin.Context) {
 
 }
 
-func (a AdminService) DeleteAdmin(c *gin.Context) {
+func (a Api) DeleteAdmin(c *gin.Context) {
 	id := c.Param("id")
 
 	err := a.storage.Admin().DeleteUser(c.Request.Context(), id)
@@ -108,7 +94,7 @@ func (a AdminService) DeleteAdmin(c *gin.Context) {
 	})
 }
 
-func (a AdminService) CreateProject(c *gin.Context) {
+func (a Api) CreateProject(c *gin.Context) {
 	project := models.Project{}
 	if err := c.ShouldBindJSON(&project); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -127,7 +113,7 @@ func (a AdminService) CreateProject(c *gin.Context) {
 	})
 }
 
-func (a AdminService) UpdateProject(c *gin.Context) {
+func (a Api) UpdateProject(c *gin.Context) {
 	project := models.Project{}
 
 	if err := c.ShouldBindJSON(&project); err != nil {
@@ -149,7 +135,7 @@ func (a AdminService) UpdateProject(c *gin.Context) {
 	})
 }
 
-func (a AdminService) DeleteProject(c *gin.Context) {
+func (a Api) DeleteProject(c *gin.Context) {
 	id := c.Param("id")
 
 	err := a.storage.Admin().DeleteProject(context.Background(), id)
@@ -164,7 +150,7 @@ func (a AdminService) DeleteProject(c *gin.Context) {
 	})
 }
 
-func (a AdminService) GetUserList(c *gin.Context) {
+func (a Api) GetUserList(c *gin.Context) {
 	res, err := a.storage.Admin().GetUserList(context.Background())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -175,7 +161,7 @@ func (a AdminService) GetUserList(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (a AdminService) ProjectList(c *gin.Context) {
+func (a Api) ProjectList(c *gin.Context) {
 
 	res, err := a.storage.Admin().GetProjectList(context.Background())
 	if err != nil {
@@ -188,7 +174,7 @@ func (a AdminService) ProjectList(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (a AdminService) GetProject(c *gin.Context) {
+func (a Api) GetProject(c *gin.Context) {
 	id := c.Param("id")
 	b, err := a.storage.Admin().GetProject(context.Background(), id)
 	if err != nil {
