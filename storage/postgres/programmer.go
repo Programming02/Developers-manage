@@ -2,16 +2,16 @@ package postgres
 
 import (
 	"context"
-	"github.com/jmoiron/sqlx"
+	"database/sql"
 	"github.com/programming02/osg/api/models"
 	"github.com/programming02/osg/storage/repo"
 )
 
 type programmerRepo struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewProgrammerRepo(db *sqlx.DB) repo.Programmer {
+func NewProgrammerRepo(db *sql.DB) repo.Programmer {
 	return &programmerRepo{
 		db: db,
 	}

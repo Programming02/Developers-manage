@@ -1,16 +1,16 @@
 package postgres
 
 import (
-	"github.com/jmoiron/sqlx"
+	"database/sql"
 	"github.com/programming02/osg/api/models"
 	"github.com/programming02/osg/storage/repo"
 )
 
 type registerRepo struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewRegisterRepo(db *sqlx.DB) repo.Register {
+func NewRegisterRepo(db *sql.DB) repo.Register {
 	return &registerRepo{
 		db: db,
 	}

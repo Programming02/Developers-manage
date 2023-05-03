@@ -1,7 +1,8 @@
 package storage
 
 import (
-	"github.com/jmoiron/sqlx"
+	"database/sql"
+	//"github.com/jmoiron/sqlx"
 	"github.com/programming02/osg/storage/postgres"
 	"github.com/programming02/osg/storage/repo"
 )
@@ -13,13 +14,13 @@ type IStorage interface {
 }
 
 type storagePg struct {
-	db         *sqlx.DB
+	db         *sql.DB
 	admin      repo.Admin
 	programmer repo.Programmer
 	register   repo.Register
 }
 
-func New(db *sqlx.DB) *storagePg {
+func New(db *sql.DB) *storagePg {
 	return &storagePg{
 		db:         db,
 		admin:      postgres.NewAdminRepo(db),

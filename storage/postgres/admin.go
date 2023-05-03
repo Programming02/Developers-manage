@@ -2,16 +2,16 @@ package postgres
 
 import (
 	"context"
-	"github.com/jmoiron/sqlx"
+	"database/sql"
 	"github.com/programming02/osg/api/models"
 	"github.com/programming02/osg/storage/repo"
 )
 
 type adminRepo struct {
-	db *sqlx.DB
+	db *sql.DB
 }
 
-func NewAdminRepo(db *sqlx.DB) repo.Admin {
+func NewAdminRepo(db *sql.DB) repo.Admin {
 	return &adminRepo{
 		db: db,
 	}
