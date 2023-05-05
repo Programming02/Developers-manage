@@ -7,8 +7,7 @@ import (
 	middleware "github.com/programming02/osg/middlewere"
 )
 
-func AdminRouter(a controller.Api) {
-	r := gin.Default()
+func AdminRouter(a *controller.Api, r gin.IRouter) {
 	cfg, err := config.Load()
 	if err != nil {
 		return
@@ -16,7 +15,7 @@ func AdminRouter(a controller.Api) {
 
 	r.Use(middleware.Authorizer(cfg))
 
-	r.GET("/get_admin/:id/", a.CreateAdmin)
+	r.GET("/get_admin/:id/", a.GetAdmin)
 	r.GET("/get_project/", a.GetProject)
 	r.GET("/get_users/", a.GetUserList)
 	r.GET("/get_projects/", a.ProjectList)
@@ -29,5 +28,4 @@ func AdminRouter(a controller.Api) {
 
 	r.DELETE("/del_admin/:id/", a.DeleteAdmin)
 	r.DELETE("/del_project/", a.DeleteProject)
-
 }

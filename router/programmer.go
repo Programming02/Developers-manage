@@ -7,8 +7,7 @@ import (
 	middleware "github.com/programming02/osg/middlewere"
 )
 
-func ProgrammerRouter(c *controller.Api) {
-	r := gin.Default()
+func ProgrammerRouter(c *controller.Api, r gin.IRouter) {
 	cfg, err := config.Load() //config.Load()
 	if err != nil {
 		return

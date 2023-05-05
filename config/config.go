@@ -6,13 +6,13 @@ import (
 )
 
 type Config struct {
-	Host                      string `json:"host" required:"true"`
-	Port                      string `json:"port" required:"true"`
-	PostgresHost              string `json:"postgresHost" required:"true"`
-	PostgresPort              string `json:"postgresPort" required:"true"`
-	PostgresUser              string `json:"postgresUser" required:"true"`
-	PostgresPassword          string `json:"postgresPassword" required:"true"`
-	PostgresDB                string `json:"postgresDB" required:"true"`
+	Host                      string `json:"host" required:"true" envconfig:"HOST"`
+	Port                      string `json:"port" required:"true" envconfig:"PORT"`
+	PostgresHost              string `json:"postgresHost" required:"true" envconfig:"POSTGRES_HOST"`
+	PostgresPort              string `json:"postgresPort" required:"true" envconfig:"POSTGRES_PORT"`
+	PostgresUser              string `json:"postgresUser" required:"true" envconfig:"POSTGRES_USER"`
+	PostgresPassword          string `json:"postgresPassword" required:"true" envconfig:"POSTGRES_PASSWORD"`
+	PostgresDB                string `json:"postgresDB" required:"true" envconfig:"POSTGRES_DB"`
 	CasbinConfigPath          string `envconfig:"CASBIN_CONFIG_PATH" required:"true"`
 	MiddlewareRolesPath       string `envconfig:"MIDDLEWERE_ROLES_PATH" required:"true"`
 	SigningKey                string `envconfig:"SIGNIN_KEY" required:"true"`
@@ -25,13 +25,14 @@ type Config struct {
 
 func Load() (Config, error) {
 	return Config{
-		Host:             os.Getenv("HOST"),
-		Port:             os.Getenv("PORT"),
-		PostgresHost:     os.Getenv("POSTGRES_HOST"),
-		PostgresPort:     os.Getenv("POSTGRES_PORT"),
-		PostgresUser:     os.Getenv("POSTGRES_USER"),
-		PostgresPassword: os.Getenv("POSTGRES_PASSWORD"),
-		PostgresDB:       os.Getenv("POSTGRES_DB"),
+		Host:                   os.Getenv("HOST"),
+		Port:                   os.Getenv("PORT"),
+		PostgresHost:           os.Getenv("POSTGRES_HOST"),
+		PostgresPort:           os.Getenv("POSTGRES_PORT"),
+		PostgresUser:           os.Getenv("POSTGRES_USER"),
+		PostgresPassword:       os.Getenv("POSTGRES_PASSWORD"),
+		PostgresDB:             os.Getenv("POSTGRES_DB"),
+		PostgresMigrationsPath: os.Getenv("POSTGRES_MIGRATIONS_PATH"),
 	}, nil
 }
 

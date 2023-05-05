@@ -58,10 +58,14 @@ func Connect(cfg config.Config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(cfg.PostgresMigrationsPath + "hey")
 	m, err := migrate.NewWithDatabaseInstance(
 		cfg.PostgresMigrationsPath,
 		"postgres", driver,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		return nil, fmt.Errorf("failed to migrate: %v ", err)
