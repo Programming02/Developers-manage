@@ -8,7 +8,7 @@ import (
 )
 
 func ProgrammerRouter(c *controller.Api, r gin.IRouter) {
-	cfg, err := config.Load() //config.Load()
+	cfg, err := config.Load()
 	if err != nil {
 		return
 	}
