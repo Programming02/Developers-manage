@@ -98,7 +98,7 @@ func (p programmerRepo) DeleteCommit(ctx context.Context, id string) error {
 	return nil
 }
 
-func (p programmerRepo) GetCommitList(ctx context.Context, taskId string) ([]models.Commit, error) {
+func (p programmerRepo) GetCommit(ctx context.Context, taskId string) ([]models.Commit, error) {
 	rows, err := p.db.QueryContext(ctx, `
 	SELECT * FROM commit WHERE id=$1
 `,

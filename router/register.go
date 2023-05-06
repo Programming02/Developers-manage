@@ -16,4 +16,5 @@ func RegisterROuter(c *controller.Api, r gin.IRouter) {
 	r.Use(middleware.Authorizer(cfg))
 
 	r.POST("/login/", c.Login)
+	r.POST("/register/", c.Register)
 }

@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func (p Api) CreateTask(c *gin.Context) {
+func (a Api) CreateTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -26,7 +26,7 @@ func (p Api) CreateTask(c *gin.Context) {
 		return
 	}
 
-	role, err := p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+	role, err := a.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: task.ProjectId,
 	})
@@ -37,7 +37,7 @@ func (p Api) CreateTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"err": "You're not team_lead"})
 	}
 
-	if err := p.storage.Programmer().CreateTask(context.Background(), task); err != nil {
+	if err := a.storage.Programmer().CreateTask(context.Background(), task); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 		})
@@ -48,7 +48,7 @@ func (p Api) CreateTask(c *gin.Context) {
 	})
 }
 
-func (p Api) UpdateTask(c *gin.Context) {
+func (a Api) UpdateTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -63,13 +63,10 @@ func (p Api) UpdateTask(c *gin.Context) {
 		return
 	}
 
-	role, err := p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+	role, err := a.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId: user.UserID.String(),
 	})
-	//role, err := p.UserRole(context.Background(), models.UserRole{
-	//	UserId:    user.UserID.String(),
-	//	ProjectId: task.ProjectId,
-	//})
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 	}
@@ -77,7 +74,7 @@ func (p Api) UpdateTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"err": "You're not team_lead"})
 	}
 
-	err = p.storage.Programmer().UpdateTask(context.Background(), task)
+	err = a.storage.Programmer().UpdateTask(context.Background(), task)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
@@ -91,7 +88,7 @@ func (p Api) UpdateTask(c *gin.Context) {
 
 }
 
-func (p Api) DeleteTask(c *gin.Context) {
+func (a Api) DeleteTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -106,12 +103,12 @@ func (p Api) DeleteTask(c *gin.Context) {
 		})
 	}
 
-	task, err := p.storage.Programmer().GetTask(context.Background(), id)
+	task, err := a.storage.Programmer().GetTask(context.Background(), id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 	}
 
-	role, err := p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+	role, err := a.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: task.ProjectId,
 	})
@@ -122,7 +119,7 @@ func (p Api) DeleteTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"err": "You're not team_lead"})
 	}
 
-	err = p.storage.Programmer().DeleteTask(context.Background(), id)
+	err = a.storage.Programmer().DeleteTask(context.Background(), id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"err": err,
@@ -134,7 +131,7 @@ func (p Api) DeleteTask(c *gin.Context) {
 	})
 }
 
-func (p Api) GetTask(c *gin.Context) {
+func (a Api) GetTask(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -147,13 +144,13 @@ func (p Api) GetTask(c *gin.Context) {
 		})
 	}
 
-	t, err := p.storage.Programmer().GetTask(context.Background(), id)
+	t, err := a.storage.Programmer().GetTask(context.Background(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 		})
 	}
-	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+	_, err = a.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: t.ProjectId,
 	})
@@ -165,28 +162,15 @@ func (p Api) GetTask(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 	}
 
-	task, err := p.storage.Programmer().GetTask(context.Background(), id)
+	task, err := a.storage.Programmer().GetTask(context.Background(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"err": err.Error()})
 	}
 
 	c.JSON(http.StatusOK, gin.H{"ok": task})
-	//c.JSON(http.StatusOK, gin.H{
-	//	"id":            t.Id,
-	//	"title":         t.Title,
-	//	"description":   t.Description,
-	//	"start_at":      t.StartAt,
-	//	"finish_at":     t.FinishedAt,
-	//	"status":        t.Status,
-	//	"started_at":    t.StartedAt,
-	//	"finished_at":   t.FinishedAt,
-	//	"programmer_id": t.ProgrammerId,
-	//	"attachments":   t.Attachments,
-	//	"project_id":    t.ProjectId,
-	//})
 }
 
-func (p Api) CreateCommit(c *gin.Context) {
+func (a Api) CreateCommit(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -199,13 +183,13 @@ func (p Api) CreateCommit(c *gin.Context) {
 		})
 	}
 
-	t, err := p.storage.Programmer().GetTask(context.Background(), commit.TaskID)
+	t, err := a.storage.Programmer().GetTask(context.Background(), commit.TaskID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 		})
 	}
-	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+	_, err = a.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: t.ProjectId,
 	})
@@ -216,7 +200,7 @@ func (p Api) CreateCommit(c *gin.Context) {
 		"err": err.Error(),
 	})
 
-	err = p.storage.Programmer().CreateCommit(context.Background(), commit)
+	err = a.storage.Programmer().CreateCommit(context.Background(), commit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
@@ -228,7 +212,7 @@ func (p Api) CreateCommit(c *gin.Context) {
 
 }
 
-func (p Api) UpdateCommit(c *gin.Context) {
+func (a Api) UpdateCommit(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -238,7 +222,7 @@ func (p Api) UpdateCommit(c *gin.Context) {
 	if err := c.ShouldBindJSON(com); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 	}
-	err = p.storage.Programmer().UpdateCommit(context.Background(), com, user.UserID.String())
+	err = a.storage.Programmer().UpdateCommit(context.Background(), com, user.UserID.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
@@ -249,7 +233,7 @@ func (p Api) UpdateCommit(c *gin.Context) {
 	})
 }
 
-func (p Api) GetCommits(c *gin.Context) {
+func (a Api) GetCommit(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -259,13 +243,13 @@ func (p Api) GetCommits(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"err": errors.New("there's mistake on 'id'")})
 	}
 
-	t, err := p.storage.Programmer().GetTask(context.Background(), taskID)
+	t, err := a.storage.Programmer().GetTask(context.Background(), taskID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 		})
 	}
-	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+	_, err = a.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: t.ProjectId,
 	})
@@ -276,7 +260,7 @@ func (p Api) GetCommits(c *gin.Context) {
 		"err": err.Error(),
 	})
 
-	res, err := p.storage.Programmer().GetCommitList(context.Background(), taskID)
+	res, err := a.storage.Programmer().GetCommit(context.Background(), taskID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
@@ -285,7 +269,7 @@ func (p Api) GetCommits(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (p Api) DeleteCommit(c *gin.Context) {
+func (a Api) DeleteCommit(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -297,13 +281,13 @@ func (p Api) DeleteCommit(c *gin.Context) {
 		})
 	}
 
-	t, err := p.storage.Programmer().GetTask(context.Background(), id)
+	t, err := a.storage.Programmer().GetTask(context.Background(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 		})
 	}
-	_, err = p.storage.Programmer().UserRole(context.Background(), models.UserRole{
+	_, err = a.storage.Programmer().UserRole(context.Background(), models.UserRole{
 		UserId:    user.UserID.String(),
 		ProjectId: t.ProjectId,
 	})
@@ -314,7 +298,7 @@ func (p Api) DeleteCommit(c *gin.Context) {
 		"err": err.Error(),
 	})
 
-	err = p.storage.Programmer().DeleteCommit(context.Background(), user.UserID.String())
+	err = a.storage.Programmer().DeleteCommit(context.Background(), user.UserID.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
@@ -327,7 +311,7 @@ func (p Api) DeleteCommit(c *gin.Context) {
 	})
 }
 
-func (p Api) CreateAttendance(c *gin.Context) {
+func (a Api) CreateAttendance(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -337,7 +321,7 @@ func (p Api) CreateAttendance(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"err": errors.New("err with type")})
 	}
 
-	err = p.storage.Programmer().CreateAttendance(context.Background(), models.Attendance{
+	err = a.storage.Programmer().CreateAttendance(context.Background(), models.Attendance{
 		UserId: user.UserID.String(),
 		Type:   types,
 	})
@@ -349,6 +333,6 @@ func (p Api) CreateAttendance(c *gin.Context) {
 	}
 }
 
-func (p Api) UserRole(ctx context.Context, role models.UserRole) (string, error) {
-	return p.storage.Programmer().UserRole(ctx, role)
+func (a Api) UserRole(ctx context.Context, role models.UserRole) (string, error) {
+	return a.storage.Programmer().UserRole(ctx, role)
 }

@@ -15,17 +15,17 @@ func AdminRouter(a *controller.Api, r gin.IRouter) {
 
 	r.Use(middleware.Authorizer(cfg))
 
-	r.GET("/get_admin/:id/", a.GetAdmin)
-	r.GET("/get_project/", a.GetProject)
-	r.GET("/get_users/", a.GetUserList)
-	r.GET("/get_projects/", a.ProjectList)
+	r.GET("/get-admin/:id/", a.GetAdmin)
+	r.GET("/get-project/", a.GetProject)
+	r.GET("/get-users/", a.GetUserList)
+	r.GET("/get-projects/", a.ProjectList)
 
 	r.POST("/admin/", a.CreateAdmin)
 	r.POST("/project/", a.CreateProject)
 
-	r.PUT("/up_user/", a.UpdateAdmin)
-	r.PUT("/up_project/", a.UpdateProject)
+	r.PUT("/up-user/", a.UpdateAdmin)
+	r.PUT("/up-project/", a.UpdateProject)
 
-	r.DELETE("/del_admin/:id/", a.DeleteAdmin)
-	r.DELETE("/del_project/", a.DeleteProject)
+	r.DELETE("/del-admin/:id/", a.DeleteAdmin)
+	r.DELETE("/del-project/", a.DeleteProject)
 }

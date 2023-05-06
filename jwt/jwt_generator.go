@@ -51,14 +51,9 @@ func generateNewAccessToken(id string, credentials map[string]string) (string, i
 	claims["id"] = id
 	claims["role"] = credentials["role"]
 
-	// in local server access token ttl = 31 days
-	//if config.Environment == "develop" {
-	//	claims["expires"] = time.Now().Add(time.Hour * 24 * 31).Unix()
-	//} else {
-	//	// in staging server access token ttl = a day
-	//	claims["expires"] = time.Now().Add(time.Minute * 2 * time.Duration(config.JWTSecretKeyExpireMinutes)).Unix()
-	//}
-	claims["expires"] = time.Now().Add(time.Hour * 24 * 31).Unix()
+	// in staging server access token ttl = a day
+	claims["expires"] = time.Now().Add(time.Minute * 2 * time.Duration(config.JWTSecretKeyExpireMinutes)).Unix()
+
 	// Create a new JWT access token with claims.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 

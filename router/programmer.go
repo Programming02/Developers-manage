@@ -15,12 +15,16 @@ func ProgrammerRouter(c *controller.Api, r gin.IRouter) {
 
 	r.Use(middleware.Authorizer(cfg))
 
-	r.GET("/task/", c.GetTask)
-	r.GET("/commits/", c.GetCommits)
+	r.POST("/task/", c.CreateTask)
+	r.POST("/commit/", c.CreateCommit)
+	r.POST("/attendance/", c.CreateAttendance)
 
-	r.PUT("/up_task/", c.UpdateTask)
-	r.PUT("/up_commit/", c.UpdateCommit)
+	r.GET("/get-task/", c.GetTask)
+	r.GET("/get-commits/", c.GetCommit)
 
-	r.DELETE("/del_task/", c.DeleteTask)
-	r.DELETE("/del_commit/", c.DeleteCommit)
+	r.PUT("/up-task/", c.UpdateTask)
+	r.PUT("/up-commit/", c.UpdateCommit)
+
+	r.DELETE("/del-task/", c.DeleteTask)
+	r.DELETE("/del-commit/", c.DeleteCommit)
 }

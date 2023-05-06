@@ -1,0 +1,10 @@
+g, authorized, any
+g, unauthorized, any
+g, director, any
+g, admin, any
+g, programmer, any
+
+p, unauthorized, /register, POST
+p, director, /login, POST
+p, programmer, /login, POST
+P,

@@ -1,35 +1,16 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/casbin/casbin/v2"
+	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/programming02/osg/config"
 	_ "github.com/programming02/osg/config"
-	"github.com/programming02/osg/jwt"
 	"log"
 	"net/http"
+	"strings"
 )
-
-// JWTRoleAuthorizer is a structure for a Role Authorizer type
-type JWTRoleAuthorizer struct {
-	enforcer   *casbin.Enforcer
-	SigningKey []byte
-	//	logger     logger.Logger
-}
-
-// NewJWTRoleAuthorizer creates and returns new Role Authorizer
-func NewJWTRoleAuthorizer(cfg *config.Config) (*JWTRoleAuthorizer, error) {
-	enforcer, err := casbin.NewEnforcer(cfg.CasbinConfigPath, cfg.MiddlewareRolesPath)
-	if err != nil {
-		log.Fatal("could not initialize new enforcer:", err.Error())
-		return nil, err
-	}
-
-	return &JWTRoleAuthorizer{
-		enforcer:   enforcer,
-		SigningKey: []byte(cfg.JWTSecretKey),
-	}, nil
-}
 
 func Authorizer(cfg config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -40,7 +21,7 @@ func Authorizer(cfg config.Config) gin.HandlerFunc {
 			return
 		}
 
-		claims, err := jwt.ExtractClaims(accessToken, []byte(cfg.SigningKey))
+		claims, err := ExtractClaims(accessToken, []byte(cfg.SigningKey))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, map[string]string{
 				"error": err.Error(),
@@ -68,4 +49,26 @@ func Authorizer(cfg config.Config) gin.HandlerFunc {
 
 		c.Next()
 	}
+}
+
+func ExtractClaims(t string, signKey []byte) (jwtgo.MapClaims, error) {
+	claims := jwtgo.MapClaims{}
+	if t == "" {
+		claims["role"] = "unauthorized"
+		return claims, nil
+	}
+	if strings.Contains(t, "Basic") {
+		claims["role"] = "unauthorized"
+		return claims, nil
+	}
+	token, err := jwtgo.ParseWithClaims(t, claims, func(token *jwtgo.Token) (interface{}, error) {
+		return signKey, nil
+	})
+
+	claims, ok := token.Claims.(jwtgo.MapClaims)
+	if !(ok && token.Valid) {
+		err = fmt.Errorf("JWT token bad")
+		return nil, err
+	}
+	return claims, nil
 }
