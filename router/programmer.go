@@ -20,11 +20,11 @@ func ProgrammerRouter(c *controller.Api, r gin.IRouter) {
 	r.POST("/attendance/", c.CreateAttendance)
 
 	r.GET("/get-task/", c.GetTask)
-	r.GET("/get-commits/", c.GetCommit)
+	r.GET("/get-commits/", c.GetCommitList)
 
 	r.PUT("/up-task/", c.UpdateTask)
 	r.PUT("/up-commit/", c.UpdateCommit)
 
-	r.DELETE("/del-task/", c.DeleteTask)
-	r.DELETE("/del-commit/", c.DeleteCommit)
+	r.DELETE("/del-task/:id", c.DeleteTask)
+	r.DELETE("/del-commit/:id", c.DeleteCommit)
 }

@@ -17,12 +17,13 @@ func NewAdminRepo(db *sql.DB) repo.Admin {
 	}
 }
 
+// GetUser DONE
 func (a adminRepo) GetUser(ctx context.Context, id string) (models.Users, error) {
 	query := `
 	SELECT * FROM users WHERE id=$1
 `
 	user := models.Users{}
-	err := a.db.QueryRowContext(ctx, query, id).Scan(&user.Id, &user.FullName, &user.Avatar, &user.Role, &user.BirthDay, &user.PhoneNumber, &user.Positions)
+	err := a.db.QueryRowContext(ctx, query, id).Scan(&user.Id, &user.FullName, &user.Password, &user.Avatar, &user.Role, &user.BirthDay, &user.PhoneNumber, &user.Positions)
 	if err != nil {
 		return models.Users{}, err
 	}
@@ -30,7 +31,7 @@ func (a adminRepo) GetUser(ctx context.Context, id string) (models.Users, error)
 }
 
 func (a adminRepo) CreateUser(ctx context.Context, d models.Users) error {
-	_, err := a.db.Exec(`
+	_, err := a.db.ExecContext(ctx, `
 	insert into users (id, full_name, avatar, role, birth_day, phone, position) values ($1, $2, $3, $4, $5, $6, $7) `,
 		d.Id, d.FullName, d.Avatar, d.Role, d.BirthDay, d.PhoneNumber, d.Positions,
 	)
@@ -42,6 +43,7 @@ func (a adminRepo) CreateUser(ctx context.Context, d models.Users) error {
 	return nil
 }
 
+// UpdateUser Done
 func (a adminRepo) UpdateUser(ctx context.Context, u models.Users) error {
 	_, err := a.db.ExecContext(ctx, `
 	UPDATE users SET id=$1, full_name=$2, avatar=$3, role=$4, birth_day=$5, phone=$6, position=$7
@@ -54,6 +56,7 @@ func (a adminRepo) UpdateUser(ctx context.Context, u models.Users) error {
 	return nil
 }
 
+// DeleteUser Done
 func (a adminRepo) DeleteUser(ctx context.Context, id string) error {
 	query := `
 	DELETE FROM users WHERE id=$1
@@ -65,6 +68,7 @@ func (a adminRepo) DeleteUser(ctx context.Context, id string) error {
 	return nil
 }
 
+// CreateProject Done
 func (a adminRepo) CreateProject(ctx context.Context, d models.Project) error {
 	_, err := a.db.Exec(`
 	INSERT INTO project (id, name, end_date, status, teamlead_id, attachments)
@@ -78,6 +82,7 @@ func (a adminRepo) CreateProject(ctx context.Context, d models.Project) error {
 	return nil
 }
 
+// UpdateProject Done
 func (a adminRepo) UpdateProject(ctx context.Context, p models.Project) error {
 	_, err := a.db.ExecContext(ctx, `
 	UPDATE project SET id=$1, name=$2, end_date=$3, status=$4, teamlead_id=$5, attachments=$6
@@ -90,6 +95,7 @@ func (a adminRepo) UpdateProject(ctx context.Context, p models.Project) error {
 	return nil
 }
 
+// DeleteProject Done
 func (a adminRepo) DeleteProject(ctx context.Context, id string) error {
 	query := `
 	DELETE FROM project WHERE id=$1
@@ -101,19 +107,21 @@ func (a adminRepo) DeleteProject(ctx context.Context, id string) error {
 	return nil
 }
 
+// GetUserList done
 func (a adminRepo) GetUserList(ctx context.Context) ([]models.Users, error) {
 	query := `
-	SELECT * FROM users
+	SELECT * FROM users WHERE position='programmer'
 `
 	rows, err := a.db.QueryContext(ctx, query)
 	if err != nil {
 		return []models.Users{}, err
 	}
+	defer rows.Close()
 
 	res := models.ListUsers{}
 	for rows.Next() {
 		user := models.Users{}
-		if err := rows.Scan(user.Id, user.FullName, user.Avatar, user.Role, user.BirthDay, user.PhoneNumber, user.Positions); err != nil {
+		if err := rows.Scan(user.Id, user.FullName, user.Password, user.Avatar, user.Role, user.BirthDay, user.PhoneNumber, user.Positions); err != nil {
 			return nil, err
 		}
 		res = append(res, user)
@@ -121,6 +129,7 @@ func (a adminRepo) GetUserList(ctx context.Context) ([]models.Users, error) {
 	return res, nil
 }
 
+// GetProjectList Done
 func (a adminRepo) GetProjectList(ctx context.Context) ([]models.Project, error) {
 	query := `
 	SELECT * FROM project
@@ -140,6 +149,7 @@ func (a adminRepo) GetProjectList(ctx context.Context) ([]models.Project, error)
 	return res, nil
 }
 
+// GetProject Done
 func (a adminRepo) GetProject(ctx context.Context, id string) (models.Project, error) {
 	query := `
 	SELECT * FROM project WHERE id=$1

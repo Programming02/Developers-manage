@@ -21,6 +21,7 @@ func (a Api) GetAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"user_id":   b.Id,
 		"full_name": b.FullName,
+		"password":  b.Password,
 		"avatar":    b.Avatar,
 		"Role":      b.Role,
 		"birth_day": b.BirthDay,

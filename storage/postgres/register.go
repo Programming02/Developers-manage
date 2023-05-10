@@ -19,9 +19,9 @@ func NewRegisterRepo(db *sql.DB) repo.Register {
 
 func (r *registerRepo) RegisterUser(u models.Users) error {
 	_, err := r.db.Exec(`
-	INSERT INTO users (id, full_name, avatar, role, birth_day, phone, position) VALUES ($1, $2, $3, $4, $5, $6, $7)
+	INSERT INTO users (id, full_name, password, avatar, role, birth_day, phone, position) VALUES ($1, $2, $3, $4, $5, $6, $7)
 `,
-		u.Id, u.FullName, u.Avatar, u.Role, u.BirthDay, u.PhoneNumber, u.Positions)
+		u.Id, u.FullName, u.Password, u.Avatar, u.Role, u.BirthDay, u.PhoneNumber, u.Positions)
 	if err != nil {
 		return err
 	}
@@ -41,13 +41,3 @@ func (r *registerRepo) Login(req models.LoginRequestModel) error {
 	}
 	return nil
 }
-
-//func (r *registerRepo) Login(req models.RegisterRequest) (res models.RegisterResponse, err error) {
-//	if err = r.db.QueryRow(`
-//	SELECT id, role FROM user
-//`,
-//		req.PhoneNumber, req.Password).Scan(&res.UserID, &res.Role); err != nil {
-//		return res, err
-//	}
-//	return res, nil
-//}

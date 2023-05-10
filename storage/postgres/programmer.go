@@ -17,15 +17,13 @@ func NewProgrammerRepo(db *sql.DB) repo.Programmer {
 	}
 }
 
-func (p programmerRepo) CreateTask(ctx context.Context, t models.Task) error {
-	_, err := p.db.ExecContext(ctx, `
-	INSERT INTO task (id, title, description, finish_at, status, started_at, finished_at, programmer_id, attachments, project_id) 
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-`,
-		t.Id, t.Title, t.Description, t.FinishAt, t.Status, t.StartedAt, t.FinishedAt, t.ProgrammerId, t.Attachments, t.ProjectId,
-	)
-	if err != nil {
-		return err
+func (p programmerRepo) CreateTask(ctx context.Context, t models.CreateTaskRequestModel) error {
+	query := `
+INSERT INTO task (title, description, start_at, finish_at, programmer_id, attachments, project_id) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7)
+`
+	if err := p.db.QueryRowContext(ctx, query, t.Title, t.Description, t.StartAt, t.FinishAt, t.ProgrammerID, t.Attachment, t.ProjectID); err != nil {
+		return err.Err()
 	}
 	return nil
 }
@@ -58,7 +56,7 @@ func (p programmerRepo) GetTask(ctx context.Context, id string) (models.Task, er
 	SELECT * FROM task WHERE id=$1
 `
 	task := models.Task{}
-	err := p.db.QueryRowContext(ctx, query, task).Scan(&task.Id, task.Title, task.Description, task.StartAt, task.FinishAt, task.Status, task.StartedAt, task.FinishedAt, task.ProgrammerId, task.ProjectId)
+	err := p.db.QueryRowContext(ctx, query, id).Scan(&task.Id, task.Title, task.Description, task.StartAt, task.FinishAt, task.Status, task.StartedAt, task.FinishedAt, task.ProgrammerId, task.ProjectId)
 	if err != nil {
 		return models.Task{}, err
 	}
@@ -98,11 +96,11 @@ func (p programmerRepo) DeleteCommit(ctx context.Context, id string) error {
 	return nil
 }
 
-func (p programmerRepo) GetCommit(ctx context.Context, taskId string) ([]models.Commit, error) {
+func (p programmerRepo) GetCommitList(ctx context.Context, taskID string) ([]models.Commit, error) {
 	rows, err := p.db.QueryContext(ctx, `
-	SELECT * FROM commit WHERE id=$1
+	SELECT * FROM comments WHERE id=$1
 `,
-		taskId)
+		taskID)
 	if err != nil {
 		return []models.Commit{}, err
 	}
@@ -123,12 +121,29 @@ func (p programmerRepo) CreateAttendance(ctx context.Context, req models.Attenda
 	INSERT INTO attendance VALUES ($1, $2, $3)
 `,
 		req.Type, req.UserId, req.CreatedAt)
+
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p programmerRepo) UserRole(ctx context.Context, role models.UserRole) (string, error) {
-	return "", nil
+func (p programmerRepo) GetAttendanceList(ctx context.Context, req models.GetUserAttendanceRequest) ([]models.Attendance, error) {
+	query := `
+	SELECT * FROM attendance WHERE user_id=$1 AND type=$2
+`
+	rows, err := p.db.QueryContext(ctx, query, req.UserID, req.Type)
+	if err != nil {
+		return []models.Attendance{}, err
+	}
+	defer rows.Close()
+	var attendanceList []models.Attendance
+	for rows.Next() {
+		var attendance models.Attendance
+		if err := rows.Scan(&attendance.Type, &attendance.UserId, &attendance.CreatedAt); err != nil {
+			return nil, err
+		}
+		attendanceList = append(attendanceList, attendance)
+	}
+	return attendanceList, nil
 }

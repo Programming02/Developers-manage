@@ -27,5 +27,5 @@ func AdminRouter(a *controller.Api, r gin.IRouter) {
 	r.PUT("/up-project/", a.UpdateProject)
 
 	r.DELETE("/del-admin/:id/", a.DeleteAdmin)
-	r.DELETE("/del-project/", a.DeleteProject)
+	r.DELETE("/del-project/:id", a.DeleteProject)
 }

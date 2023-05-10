@@ -37,7 +37,7 @@ func (a Api) CreateTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"err": "You're not team_lead"})
 	}
 
-	if err := a.storage.Programmer().CreateTask(context.Background(), task); err != nil {
+	if err := a.storage.Programmer().CreateTask(context.Background(), models.CreateTaskRequestModel{}); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
 		})
@@ -233,7 +233,7 @@ func (a Api) UpdateCommit(c *gin.Context) {
 	})
 }
 
-func (a Api) GetCommit(c *gin.Context) {
+func (a Api) GetCommitList(c *gin.Context) {
 	user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
@@ -260,7 +260,7 @@ func (a Api) GetCommit(c *gin.Context) {
 		"err": err.Error(),
 	})
 
-	res, err := a.storage.Programmer().GetCommit(context.Background(), taskID)
+	res, err := a.storage.Programmer().GetCommitList(context.Background(), taskID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
@@ -270,7 +270,19 @@ func (a Api) GetCommit(c *gin.Context) {
 }
 
 func (a Api) DeleteCommit(c *gin.Context) {
-	user, err := jwt.ExtractTokenMetadata(c)
+	id := c.Param("id")
+
+	if err := c.ShouldBindJSON(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"err": "can't bind id" + err.Error()})
+	}
+
+	if err := a.storage.Programmer().DeleteCommit(context.Background(), id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"err": "can't delete comment" + err.Error()})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+
+	/* user, err := jwt.ExtractTokenMetadata(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"err": err.Error()})
 	}
@@ -298,7 +310,7 @@ func (a Api) DeleteCommit(c *gin.Context) {
 		"err": err.Error(),
 	})
 
-	err = a.storage.Programmer().DeleteCommit(context.Background(), user.UserID.String())
+	err = a.storage.Programmer().DeleteCommit(context.Background(), )
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"err": err.Error(),
@@ -308,7 +320,7 @@ func (a Api) DeleteCommit(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"ok": true,
-	})
+	})  */
 }
 
 func (a Api) CreateAttendance(c *gin.Context) {
@@ -331,6 +343,10 @@ func (a Api) CreateAttendance(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"ok": true})
 	}
+}
+
+func (a Api) GetAttendanceList(c *gin.Context) {
+
 }
 
 func (a Api) UserRole(ctx context.Context, role models.UserRole) (string, error) {

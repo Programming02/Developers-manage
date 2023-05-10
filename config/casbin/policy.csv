@@ -1,10 +1,28 @@
 g, authorized, any
 g, unauthorized, any
-g, director, any
 g, admin, any
 g, programmer, any
 
-p, unauthorized, /register, POST
-p, director, /login, POST
-p, programmer, /login, POST
-P,
+p, unauthorized, /register/, POST
+p, unauthorized, /login/, POST
+
+p, admin, /get-admin/:id/, GET
+p, admin, /get-project/, GET
+p, admin, /get-users/, GET
+p, admin, /get-projects/, GET
+p, admin, /admin/, POST
+p, admin, /project/, POST
+p, admin, /up-user/, PUT
+p, admin, /up-project/, PUT
+p, admin, /del-admin/:id/, DELETE
+p, admin, /del-project/, DELETE
+
+p, programmer, /task/, POST
+p, programmer, /commit/, POST
+p, programmer, /attendance/, POST
+p, programmer, /get-task/, GET
+p, programmer, /get-commits/, GET
+p, programmer, /up-task/, PUT
+p, programmer, /up-commit/, PUT
+p, programmer, /del-task/:id, DELETE
+p, programmer, /del-commit/:id, DELETE
